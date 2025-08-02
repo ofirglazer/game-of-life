@@ -1,41 +1,22 @@
 import random
 from random import randrange
-import numpy as np
+# import numpy as np
 random.seed(1)
 
-
-class Cell:
-
-    def __init__(self, position=(0,0)):
-        self.pos_x = position[0]
-        self.pos_y = position[1]
-
-
-    def __eq__(self, other):
-        if self.pos_x == other.pos_x and self.pos_y == other.pos_y:
-            return True
-        return False
-
-    def __hash__(self):
-        return hash((self.pos_x, self.pos_y))
-
-    def __str__(self):
-        return (f"Cell in position {(self.pos_x, self.pos_y)}")
 
 class World:
 
     def __init__(self, num_populated=1, width=100, height=100):
         self.width = width
         self.height = height
-        self.neighbours = [[None for _ in range(self.width)] for _ in range(self.height)]
-        self.population = []
+        self.neighbours = [[0 for _ in range(self.width)] for _ in range(self.height)]
+        self.population = [[False for _ in range(self.width)] for _ in range(self.height)]
 
         # add initial population, no duplicates
         for _ in range(num_populated):
             pos_x = randrange(self.width)
             pos_y = randrange(self.height)
-            self.population.append(Cell((pos_x, pos_y)))
-        self.population = list(set(self.population))  # Removing duplicates by list->set->list
+            self.population[pos_y][pos_x] = True
 
     def count_neighbours(self):
         for row in range(self.height):
@@ -54,14 +35,31 @@ class World:
                         # don't count neighbour if exactly at cell position
                         if neighbour_x == col and neighbour_y == row:
                             continue
-                        if Cell((neighbour_x, neighbour_y)) in self.population:
+                        if self.population[neighbour_y][neighbour_x]:
                             self.neighbours[row][col] += 1
 
 
-    def update(self):
-        for particle in self.population:
-            pass
+    def evolve(self):
+        # checking rules for each cell
+        for row in range(self.height):
+            for col in range(self.width):
 
+                if self.population[row][col]:  # if it is populated
+                    # each cell with one or no neighbors dies, as if by solitude.
+                    if self.neighbours[row][col] <= 1:
+                        self.population[row][col] = False
+                    # each cell with four or more neighbors dies, as if by overpopulation.
+                    elif self.neighbours[row][col] >= 4:
+                        self.population[row][col] = False
+                    # each cell with two or three neighbors survives.
+                else:  # if it is unpopulated
+                    # each cell with three neighbors becomes populated.
+                    if self.neighbours[row][col] == 3:
+                        self.population[row][col] = True
+
+    def update(self):
+        self.count_neighbours()
+        self.evolve()
 
     def __str__(self):
         string = f"{self.width}X{self.height} world with a population of {len(self.population)}"
@@ -69,9 +67,9 @@ class World:
 
 
 if __name__ == '__main__':
-    num_populated = 7
-    width = 6
-    height = 5
+    num_populated = 3
+    width = 4
+    height = 2
     world = World(num_populated, width, height)
-    world.count_neighbours()
+    world.update()
     print(world)

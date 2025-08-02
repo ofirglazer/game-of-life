@@ -1,7 +1,7 @@
 import random
 from random import randrange
 # import numpy as np
-random.seed(1)
+# random.seed(1)
 
 
 class World:
@@ -17,6 +17,7 @@ class World:
             pos_x = randrange(self.width)
             pos_y = randrange(self.height)
             self.population[pos_y][pos_x] = True
+        print(f"init: there are {sum(sum(row) for row in self.population)} cells")
 
     def count_neighbours(self):
         for row in range(self.height):
@@ -38,7 +39,6 @@ class World:
                         if self.population[neighbour_y][neighbour_x]:
                             self.neighbours[row][col] += 1
 
-
     def evolve(self):
         # checking rules for each cell
         for row in range(self.height):
@@ -59,6 +59,7 @@ class World:
 
     def update(self):
         self.count_neighbours()
+        print(f"init: there are {sum(sum(row) for row in self.population)} cells")
         self.evolve()
 
     def __str__(self):

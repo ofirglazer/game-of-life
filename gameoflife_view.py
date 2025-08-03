@@ -13,17 +13,17 @@ class WorldRenderer:
         pygame.display.set_caption("Game Of Life")
         # Create base square surface (1x1 pixel)
         self.base_square = pygame.Surface((1, 1))
-        self.base_square.fill(BLACK)
+        self.base_square.fill(WHITE)
         # Create populated square surface (1x1 pixel)
         self.populated_square = pygame.Surface((1, 1))
-        self.populated_square.fill(WHITE)
+        self.populated_square.fill(BLACK)
 
     def draw_grid(self, world):
         # Create base square surface (1x1 pixel)
         self.base_square = pygame.Surface((1, 1))
         self.base_square.fill(BLACK)
 
-        self.square_size = min(self.win_width // world.width, self.win_height // world.height)
+
 
         scaled_square = pygame.transform.scale(self.base_square, (self.square_size - 2, self.square_size - 2))
         for row in range(world.height):
@@ -31,12 +31,10 @@ class WorldRenderer:
                 self.window.blit(scaled_square, (1 + col * self.square_size, 1 + row * self.square_size))
 
 
-    def draw_particle(self, particle):
-        pygame.draw.circle(self.window, WHITE, (particle.pos_x, particle.pos_y), particle.radius)
-
     def render(self, world):
         self.window.fill(WHITE)
-        self.draw_grid(world)
+        # self.draw_grid(world)  # grid is not necessary anymore
+        self.square_size = min(self.win_width // world.width, self.win_height // world.height)
 
         scaled_populated_square = pygame.transform.scale(self.populated_square, (self.square_size - 2, self.square_size - 2))
         for row in range(world.height):

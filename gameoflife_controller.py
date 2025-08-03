@@ -11,16 +11,28 @@ def main(num_populated=1, win_width=500, win_height=400, world_width=5, world_he
     FPS = 4
     clock = pygame.time.Clock()
     running = True
+    paused = False
     viewer.render(model)
 
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:  # Pause/unpause
+                    paused = not paused
+                elif event.key == pygame.K_r:  # Reset
+                    model.reset()
+                elif event.key == pygame.K_ESCAPE:
+                    running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:  # Toggle cells
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                # TODO
 
-        model.update()
-        viewer.render(model)
-        clock.tick(FPS)
+        if not paused:
+            model.update()
+            viewer.render(model)
+            clock.tick(FPS)
 
 
 if __name__ == '__main__':

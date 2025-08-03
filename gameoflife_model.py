@@ -1,6 +1,6 @@
 import random
 from random import randrange
-# import numpy as np
+from copy import deepcopy
 # random.seed(1)
 
 
@@ -17,6 +17,7 @@ class World:
             pos_x = randrange(self.width)
             pos_y = randrange(self.height)
             self.population[pos_y][pos_x] = True
+        self.initial_population = deepcopy(self.population)
         print(f"init: there are {sum(sum(row) for row in self.population)} cells")
 
     def count_neighbours(self):
@@ -59,8 +60,11 @@ class World:
 
     def update(self):
         self.count_neighbours()
-        print(f"init: there are {sum(sum(row) for row in self.population)} cells")
+        print(f"there are {sum(sum(row) for row in self.population)} cells, and in initial {sum(sum(row) for row in self.initial_population)}")
         self.evolve()
+
+    def reset(self):
+        self.population = deepcopy(self.initial_population)
 
     def __str__(self):
         string = f"{self.width}X{self.height} world with a population of {len(self.population)}"
